@@ -17,7 +17,7 @@ const createProperty = async (req, res) => {
 const getProperties = async (req, res) => {
   try {
     const { location, minPrice, maxPrice, bedrooms, page = 1, limit = 10 } = req.query;
-    const filters = { isActive: true };
+    const filters = { };
     
     if (location) filters.location = { $regex: location, $options: 'i' };
     if (bedrooms) filters.bedrooms = bedrooms;
@@ -29,8 +29,8 @@ const getProperties = async (req, res) => {
 
     const skip = (Number(page) - 1) * Number(limit);
 
-    const properties = await Property.find(filter).skip(skip).limit(Number(limit));
-    const total = await Property.countDocuments(filter);
+    const properties = await Property.find(filters).skip(skip).limit(Number(limit));
+    const total = await Property.countDocuments(filters);
 
     res.json({
       total,
@@ -58,13 +58,36 @@ const getPropertyById = async (req, res) => {
 // Update property
 const updateProperty = async (req, res) => {
   try {
-    const updated = await Property.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updated) return res.status(404).json({ error: 'Property not found' });
-    res.json(updated);
+    const { id } = req.params;
+
+    // Optional: Check if the property exists first
+    const existingProperty = await Property.findById(id);
+    if (!existingProperty) {
+      return res.status(404).json({ message: 'Property not found' });
+    }
+
+    // Optional: Authorization check — only admin or property owner can update
+    if (
+      req.user.role !== 'admin' &&
+      existingProperty.listedBy.toString() !== req.user._id.toString()
+    ) {
+      return res.status(403).json({ message: 'Unauthorized to update this property' });
+    }
+
+    const updated = await Property.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.status(200).json({
+      message: 'Property updated successfully',
+      property: updated,
+    });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
+
 
 // Delete property
 const deleteProperty = async (req, res) => {

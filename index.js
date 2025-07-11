@@ -12,6 +12,14 @@ const PORT = process.env.PORT || 5000;
 //require('dotenv').config()
 dotenv.config();
 
+async function main() {
+  await mongoose.connect(process.env.DB_URL);
+}
+
+main()
+  .then(() => console.log("MongoDB connected successfully!"))
+  .catch(err => console.log(err));
+
 //Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -22,14 +30,13 @@ app.use("/api/properties", propertyRoutes);
 const userRoutes = require('./src/users/user.route')
 app.use("/api/users", userRoutes);
 
-app.use(errorHandler);
-async function main() {
-    await mongoose.connect(process.env.DB_URL);
-    // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');` if your database has auth enabled
-    app.use('/', (req,res) => {
-        res.send("welcome to Propzilla!");
-    })
-  }
+app.get('/', (req, res) => {
+  res.send("Welcome to PropZilla!");
+});
 
-main().then(() => console.log("Mongodb connect successfully!")).catch(err => console.log(err));
+app.use((req, res) => {
+  res.status(404).json({ message: 'Route not found' });
+});
+app.use(errorHandler);
+
 app.listen(PORT, () => console.log(`Server running on port: http://localhost: ${PORT}`));

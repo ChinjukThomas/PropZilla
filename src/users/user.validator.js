@@ -1,8 +1,11 @@
 const { body } = require('express-validator');
 
 const validateRegister = [
-  body('email').isEmail().withMessage('Valid email is required'),
-  body('password')
+  body('email')
+    .notEmpty().withMessage('Email is required').bail()
+    .isEmail().withMessage('Valid email is required'),
+    body('password')
+    .notEmpty().withMessage('Password is required').bail()
     .isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
   body('role')
     .optional()

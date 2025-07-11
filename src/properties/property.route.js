@@ -22,7 +22,7 @@ router.get('/', getProperties);
 router.get('/:id', getPropertyById);
 
 // Admin-only Routes
-router.post('/', authenticate, allowRoles('admin'), validateProperty, validateRequest, createProperty);
+router.post('/create', authenticate, allowRoles('admin'), validateProperty, validateRequest, createProperty);
 router.patch('/:id', authenticate, allowRoles('admin'), updateProperty);
 router.delete('/:id', authenticate, allowRoles('admin'), deleteProperty);
 
