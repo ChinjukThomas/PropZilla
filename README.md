@@ -51,14 +51,12 @@ PropZilla API/
 
 API Endpoints:
 
-Auth
------
+Users
+------
 POST /api/v1/users/register — Register user
 
 POST /api/v1/users/login — Login and receive JWT
 
-Users
-------
 GET /api/v1/users/me — Get current user profile
 
 PATCH /api/v1/users/update-password — Update password
