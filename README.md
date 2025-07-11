@@ -46,3 +46,37 @@ PropZilla API/
 ├── package.json 
 ├── index.js 
 ├── README.md 
+
+---
+
+API Endpoints:
+
+Auth
+-----
+POST /api/v1/users/register — Register user
+
+POST /api/v1/users/login — Login and receive JWT
+
+Users
+------
+GET /api/v1/users/me — Get current user profile
+
+PATCH /api/v1/users/update-password — Update password
+
+GET /api/v1/users — Admin only: get all users
+
+PATCH /api/v1/users/:id/role — Admin: change user role
+
+DELETE /api/v1/users/:id — Admin: deactivate user
+
+Properties
+-----------
+POST /api/v1/properties — Create property (Admin only)
+
+GET /api/v1/properties — List/search properties
+
+GET /api/v1/properties/:id — Get property by ID
+
+PATCH /api/v1/properties/:id — Update property
+
+DELETE /api/v1/properties/:id — Delete property
